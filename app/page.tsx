@@ -6,7 +6,7 @@ import { ComboModal } from '@/src/components/ComboModal';
 import { FilterPanel } from '@/src/components/FilterPanel';
 import { CardPreview } from '@/src/components/CardPreview';
 import { DecklistImport } from '@/src/components/DecklistImport';
-import { fetchCombos } from '@/src/services/api';
+import { fetchCombos, getCardColorIdentity } from '@/src/services/api';
 import { parseDecklist, findCombosInDeck } from '@/src/utils/decklistParser';
 import { SpellbookVariant, ColorIdentity } from '@/src/types';
 
@@ -54,6 +54,15 @@ export default function Home() {
       
       setDeckCards(parsedDeck.cards);
       setDeckName(parsedDeck.deckName || 'Your Deck');
+      
+      // Get commander color identity and auto-filter
+      if (parsedDeck.commanders && parsedDeck.commanders.length > 0) {
+        const commanderName = parsedDeck.commanders[0];
+        const colors = await getCardColorIdentity(commanderName);
+        if (colors.length > 0) {
+          setSelectedColors(colors as ColorIdentity[]);
+        }
+      }
       
       console.log(`Analyzing ${parsedDeck.cards.length} cards against ${allCombos.length} combos...`);
       const { foundCombos: found, almostCombos: almost } = findCombosInDeck(parsedDeck.cards, allCombos);

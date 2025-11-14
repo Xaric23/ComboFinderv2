@@ -70,3 +70,17 @@ export async function validateCards(cardNames: string[]): Promise<boolean> {
     return false;
   }
 }
+
+export async function getCardColorIdentity(cardName: string): Promise<string[]> {
+  try {
+    const response = await fetch(`https://api.scryfall.com/cards/named?exact=${encodeURIComponent(cardName)}`);
+    if (!response.ok) {
+      throw new Error('Card not found');
+    }
+    const data = await response.json();
+    return data.color_identity || [];
+  } catch (err) {
+    console.error(`Failed to fetch color identity for ${cardName}:`, err);
+    return [];
+  }
+}
