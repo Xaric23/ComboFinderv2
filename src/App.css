@@ -204,10 +204,12 @@ body {
 
 .ms {
   display: inline-block;
+  color: currentColor;
 }
 
 .ms-cost {
   font-size: 1.2em !important;
+  color: inherit;
 }
 
 .combo-description {
