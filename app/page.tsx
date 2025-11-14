@@ -55,14 +55,8 @@ export default function Home() {
       setDeckCards(parsedDeck.cards);
       setDeckName(parsedDeck.deckName || 'Your Deck');
       
-      // Get commander color identity and auto-filter
-      if (parsedDeck.commanders && parsedDeck.commanders.length > 0) {
-        const commanderName = parsedDeck.commanders[0];
-        const colors = await getCardColorIdentity(commanderName);
-        if (colors.length > 0) {
-          setSelectedColors(colors as ColorIdentity[]);
-        }
-      }
+      // Reset color filters to show all combos in deck
+      setSelectedColors([]);
       
       console.log(`Analyzing ${parsedDeck.cards.length} cards against ${allCombos.length} combos...`);
       const { foundCombos: found, almostCombos: almost } = findCombosInDeck(parsedDeck.cards, allCombos);
