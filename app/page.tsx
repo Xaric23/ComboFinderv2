@@ -55,8 +55,14 @@ export default function Home() {
       setDeckCards(parsedDeck.cards);
       setDeckName(parsedDeck.deckName || 'Your Deck');
       
-      // Reset color filters to show all combos in deck
-      setSelectedColors([]);
+      // Get commander color identity and auto-filter to only combos in those colors
+      if (parsedDeck.commanders && parsedDeck.commanders.length > 0) {
+        const commanderName = parsedDeck.commanders[0];
+        const colors = await getCardColorIdentity(commanderName);
+        if (colors.length > 0) {
+          setSelectedColors(colors as ColorIdentity[]);
+        }
+      }
       
       console.log(`Analyzing ${parsedDeck.cards.length} cards against ${allCombos.length} combos...`);
       const { foundCombos: found, almostCombos: almost } = findCombosInDeck(parsedDeck.cards, allCombos);
@@ -92,7 +98,7 @@ export default function Home() {
         combo.produces.some(p => p.feature.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
       const matchesColor = selectedColors.length === 0 ||
-        selectedColors.every(color => combo.identity.includes(color));
+        (Array.isArray(combo.identity) ? combo.identity : combo.identity.split('')).every(color => selectedColors.includes(color as ColorIdentity));
 
       const matchesFormat = selectedFormats.length === 0 ||
         selectedFormats.some(format => {
