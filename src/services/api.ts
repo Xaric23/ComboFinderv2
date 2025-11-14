@@ -6,6 +6,22 @@ export async function fetchCombos(
   limit: number = 100,
   offset: number = 0
 ): Promise<SpellbookResponse> {
+  try {
+    // Try to load from local cache first
+    const response = await fetch('/ComboFinderv2/combos.json');
+    if (response.ok) {
+      const data = await response.json();
+      // Apply limit and offset to cached data
+      return {
+        ...data,
+        results: data.results.slice(offset, offset + limit)
+      };
+    }
+  } catch (err) {
+    console.warn('Failed to load local combos cache, falling back to API');
+  }
+  
+  // Fallback to API if cache not available
   const response = await fetch(`${API_BASE}/variants/?limit=${limit}&offset=${offset}`);
   if (!response.ok) {
     throw new Error('Failed to fetch combos');
