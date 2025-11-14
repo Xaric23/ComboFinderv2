@@ -1,0 +1,56 @@
+import { SpellbookResponse, SpellbookVariant } from '../types';
+
+const API_BASE = 'https://backend.commanderspellbook.com';
+
+export async function fetchCombos(
+  limit: number = 100,
+  offset: number = 0
+): Promise<SpellbookResponse> {
+  const response = await fetch(`${API_BASE}/variants/?limit=${limit}&offset=${offset}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch combos');
+  }
+  return response.json();
+}
+
+export async function searchCombos(
+  query: string,
+  colorIdentity?: string[],
+  formats?: string[]
+): Promise<SpellbookVariant[]> {
+  let url = `${API_BASE}/variants/?limit=100`;
+  
+  if (query) {
+    url += `&q=${encodeURIComponent(query)}`;
+  }
+  
+  if (colorIdentity && colorIdentity.length > 0) {
+    const colors = colorIdentity.join('');
+    url += `&ci=${colors}`;
+  }
+  
+  if (formats && formats.length > 0) {
+    formats.forEach(format => {
+      url += `&legal=${format.toLowerCase()}`;
+    });
+  }
+  
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Failed to search combos');
+  }
+  const data: SpellbookResponse = await response.json();
+  return data.results;
+}
+
+export async function validateCards(cardNames: string[]): Promise<boolean> {
+  try {
+    const promises = cardNames.map(name =>
+      fetch(`https://api.scryfall.com/cards/named?exact=${encodeURIComponent(name)}`)
+    );
+    const responses = await Promise.all(promises);
+    return responses.every(r => r.ok);
+  } catch {
+    return false;
+  }
+}

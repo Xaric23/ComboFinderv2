@@ -1,0 +1,87 @@
+MTG COMBO FINDER - STANDALONE VERSION
+======================================
+
+⚠️ IMPORTANT: Cannot run by just opening index.html! ⚠️
+
+QUICK START (REQUIRED):
+----------------------
+Double-click "EASY_START.bat" to launch the app!
+
+This starts a local web server and opens the app.
+KEEP THE BLACK WINDOW OPEN while using the app.
+
+Requirements: Node.js OR Python (free downloads)
+- Node.js: https://nodejs.org
+- Python: https://python.org
+
+
+WHY DO I NEED A SERVER?
+-----------------------
+The Commander Spellbook API blocks requests from file:// URLs
+due to CORS (browser security). A local server solves this.
+
+
+ALTERNATIVE METHODS:
+-------------------
+1. Navigate to the "dist" folder
+2. Double-click "index.html" to open in your browser
+3. If white screen, use the server method above
+
+
+BROWSER COMPATIBILITY:
+---------------------
+Works best with:
+- Chrome
+- Firefox
+- Edge
+- Safari
+
+Note: Some older browsers may not support all features.
+
+
+FEATURES:
+---------
+✓ Search 68,000+ combos from Commander Spellbook
+✓ Filter by color identity and format
+✓ Hover over card names to preview them
+✓ Click combos for detailed breakdowns
+✓ View card images and popularity
+
+
+OFFLINE MODE:
+------------
+The app requires an internet connection to:
+- Load combo data from Commander Spellbook API
+- Display card images from Scryfall
+
+The app files themselves work offline, but you need internet
+to fetch the actual combo database.
+
+
+TROUBLESHOOTING:
+---------------
+If the app doesn't open:
+1. Make sure you have an internet connection
+2. Try opening "dist/index.html" manually
+3. Allow JavaScript in your browser settings
+4. Check if your antivirus is blocking the files
+
+
+UPDATING:
+--------
+To get the latest version:
+1. Delete the "dist" folder
+2. Run: npm run build
+3. The new standalone version will be in the "dist" folder
+
+
+TECHNICAL INFO:
+--------------
+- Built with: React + TypeScript
+- API: Commander Spellbook (https://backend.commanderspellbook.com)
+- Card Images: Scryfall API
+- No personal data is collected or stored
+
+
+ENJOY BREWING COMBOS!
+====================
