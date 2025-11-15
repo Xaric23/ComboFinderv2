@@ -10,7 +10,23 @@ import { fetchCombos, getCardColorIdentity } from '@/src/services/api';
 import { parseDecklist, findCombosInDeck } from '@/src/utils/decklistParser';
 import { SpellbookVariant, ColorIdentity } from '@/src/types';
 
-type Format = 'Commander' | 'Modern' | 'Legacy' | 'Standard' | 'Pioneer' | 'Vintage';
+type Format = 'Commander' | 'Modern' | 'Legacy' | 'Standard' | 'Pioneer' | 'Vintage' | 'Sealed';
+
+function getExpectedDeckSize(format: Format | null): number | null {
+  if (!format) return null;
+  
+  const deckSizes: Record<Format, number> = {
+    'Commander': 100,
+    'Modern': 60,
+    'Legacy': 60,
+    'Standard': 60,
+    'Pioneer': 60,
+    'Vintage': 60,
+    'Sealed': 40,
+  };
+  
+  return deckSizes[format];
+}
 
 export default function Home() {
   const [allCombos, setAllCombos] = useState<SpellbookVariant[]>([]);
@@ -51,6 +67,17 @@ export default function Home() {
     
     try {
       const parsedDeck = parseDecklist(input);
+      
+      // Validate deck size against selected format
+      const selectedFormat = selectedFormats.length > 0 ? selectedFormats[0] : null;
+      const expectedSize = getExpectedDeckSize(selectedFormat);
+      
+      if (expectedSize && parsedDeck.cards.length !== expectedSize) {
+        const formatName = selectedFormat || 'selected format';
+        throw new Error(
+          `Deck has ${parsedDeck.cards.length} cards, but ${formatName} requires exactly ${expectedSize} cards.`
+        );
+      }
       
       setDeckCards(parsedDeck.cards);
       setDeckName(parsedDeck.deckName || 'Your Deck');
@@ -116,10 +143,8 @@ export default function Home() {
     );
   };
 
-  const toggleFormat = (format: Format) => {
-    setSelectedFormats(prev =>
-      prev.includes(format) ? prev.filter(f => f !== format) : [...prev, format]
-    );
+  const toggleFormat = (format: Format | null) => {
+    setSelectedFormats(format ? [format] : []);
   };
 
   const handleCardHover = (cardName: string, x: number, y: number) => {

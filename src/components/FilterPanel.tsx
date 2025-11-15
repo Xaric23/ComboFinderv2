@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { ColorIdentity } from '../types';
 
-type Format = 'Commander' | 'Modern' | 'Legacy' | 'Standard' | 'Pioneer' | 'Vintage';
+type Format = 'Commander' | 'Modern' | 'Legacy' | 'Standard' | 'Pioneer' | 'Vintage' | 'Sealed';
 
 interface FilterPanelProps {
   selectedColors: ColorIdentity[];
   selectedFormats: Format[];
   onColorToggle: (color: ColorIdentity) => void;
-  onFormatToggle: (format: Format) => void;
+  onFormatToggle: (format: Format | null) => void;
 }
 
 const COLORS: ColorIdentity[] = ['W', 'U', 'B', 'R', 'G', 'C'];
-const FORMATS: Format[] = ['Commander', 'Modern', 'Legacy', 'Standard', 'Pioneer', 'Vintage'];
+const FORMATS: Format[] = ['Commander', 'Modern', 'Legacy', 'Standard', 'Pioneer', 'Vintage', 'Sealed'];
 
 function getColorSymbol(color: ColorIdentity): string {
   const symbols: Record<ColorIdentity, string> = {
@@ -64,12 +64,22 @@ export function FilterPanel({ selectedColors, selectedFormats, onColorToggle, on
         </div>
 
         <div className="filter-section">
-          <h3>Formats</h3>
+          <h3>Format</h3>
           <div className="format-filters">
+            <label className="format-checkbox">
+              <input
+                type="radio"
+                name="format"
+                checked={selectedFormats.length === 0}
+                onChange={() => onFormatToggle(null)}
+              />
+              All Formats
+            </label>
             {FORMATS.map(format => (
               <label key={format} className="format-checkbox">
                 <input
-                  type="checkbox"
+                  type="radio"
+                  name="format"
                   checked={selectedFormats.includes(format)}
                   onChange={() => onFormatToggle(format)}
                 />
